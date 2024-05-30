@@ -1,125 +1,245 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/SplashScreenEmbrapa.dart';
+import 'package:flutter_application_1/SplashScreenGuardeAgua.dart';
+import 'package:flutter_application_1/telaCadastro.dart';
+import 'package:flutter_application_1/telaCadastro2.dart';
+import 'package:flutter_application_1/telaCadastro3.dart';
+
+
+
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MaterialApp(
+    initialRoute: '/splashScreenEmbrapa',
+    routes: {
+      '/splashScreenEmbrapa' : (context) => SplashScreenEmbrapa(),
+      '/splashScreenGuardeAgua' : (context) => SplashScreenGuardeAgua(),
+      '/telaLogin' : (context) => tela_login(),
+      '/telaCadastro': (context) => telaCadastro(),
+      '/telaCadastro2' : (context) => telaCadastro2(),
+      '/telaCadastro3' : (context) => Telacadastro3(),
+    },
+  )
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class tela_login extends StatefulWidget {
+  const tela_login({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<tela_login> createState() => _tela_loginState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _tela_loginState extends State<tela_login> {
+  //atributos de login
+  String email = '';
+  String senha = '';
+  bool manterConectado = false;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+
+//falta desenvolver esses métodos
+  cadastrarConta(){
+     Navigator.pushNamed(context, '/telaCadastro');
   }
+  recuperarConta(){}
+  fazerLogin(String email, String senha){
+  print("O valor do email é: $email");
+  print("o valor da senha é: $senha");
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    
+      body: Column(
+
+        children: [
+
+          //espaçamento na tela
+          const SizedBox(height: 30,),
+
+          //imagem da logoGuardeAgua
+          SizedBox(
+            width: 170,
+            height: 170,
+            child: Image.asset("assets/images/logo2.jpeg"),
+          ),
+
+          const SizedBox(height: 25,),
+
+          //texto abaixo da logo
+          const Center(
+            child: Text("Bem Vindo ao GuardeÁgua",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+          ),
+          const Center(
+            child: Text("Faça seu login para entrar na plataforma",style: TextStyle(fontSize: 16),),
+          ),
+
+
+          const SizedBox(height: 40,),
+          
+          //text de "Email" acima do textformField de email
+          Row(
+            children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              child: const Text("Email",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),
+              ),
+              ),
           ],
-        ),
+          ),
+
+          //campo de preenchimento de email
+          Center(
+            child: TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  email = value;
+                });
+              },
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: "Digite o seu email",
+                labelStyle: TextStyle(
+                  color: Colors.black38,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 20,
+                )
+
+              ),
+            )
+          ),
+
+
+          const SizedBox(
+            height: 25,
+          ),
+        //texto de "senha" acima do textformfield de senha
+          Row(
+            children: [
+            Container(
+              alignment: Alignment.centerLeft,
+              child: const Text("Senha",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),
+              ),
+              ),
+          ],
+          ),
+
+        //campo de preenchimento de senha
+          Center(
+            child: TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  senha = value;
+                });
+              },
+              keyboardType: TextInputType.text,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: "Digite sua senha",
+                labelStyle: TextStyle(
+                  color: Colors.black38,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 20,
+                )
+
+              ),
+            )
+          ),  
+
+          //botão de esqueci senha
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(
+                height: 40,
+                child: TextButton(
+                   onPressed: recuperarConta, //falta desenvolver esse método
+                   child: const Text("Esqueci minha senha"),
+                   ),
+              ),
+            ],
+          ),
+          //checkbox de mantenha-me conectado
+          //também falta desenvolver este método
+          Row(
+            children: [
+              Checkbox(value: manterConectado, onChanged: (checked){
+                setState(() {
+                  manterConectado = !manterConectado;
+                });
+              },
+              ),
+              const Text("Mantenha-me conectado",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w400),)
+            ],
+          ),
+
+
+          const SizedBox(height: 40,),
+
+          //botão para entrar na conta
+
+          Container(
+            height: 60,
+            width: 370,
+            alignment: Alignment.centerLeft,
+
+            //método para dar uma variação linear nas cores do botão
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                stops: [0.3,1],
+                colors: [
+                  Colors.blueAccent,
+                  Colors.blueGrey
+                ],),
+            //deixa as bordas arredondadas
+            borderRadius: BorderRadius.all(
+              Radius.circular(30),
+            ),
+            ),
+
+          //define o botão dentro do container, "SizeBox.expad" faz com que o botão ocupe todo o espaço do container
+           child: SizedBox.expand(  
+             child: TextButton(
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Entrar",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.white ),
+                  ),
+                 
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+            onPressed :(){
+              //falta desenvolver o método de fazerLogin
+              fazerLogin(email, senha);
+      },
+      ),
+      ),
+      ),
+
+      const SizedBox(height: 5,),
+
+      //botão para entrar na tela de cadastro
+        Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                child: TextButton(
+                   onPressed: cadastrarConta,
+                   child: const Text("Não possui conta? Cadastre-se",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w400),),
+                   ),
+              ),
+            ],
+          ),
+      ],
+      ),
+      )
+      ;
   }
 }
