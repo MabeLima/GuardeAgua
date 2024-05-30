@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/SplashScreenEmbrapa.dart';
-import 'package:flutter_application_1/SplashScreenGuardeAgua.dart';
-import 'package:flutter_application_1/telaCadastro.dart';
-import 'package:flutter_application_1/telaCadastro2.dart';
-import 'package:flutter_application_1/telaCadastro3.dart';
+import 'package:guarde_agua/SplashScreenEmbrapa.dart';
+import 'package:guarde_agua/SplashScreenGuardeAgua.dart';
+import 'package:guarde_agua/telaCadastro.dart';
+import 'package:guarde_agua/telaCadastro2.dart';
+import 'package:guarde_agua/telaCadastro3.dart';
 
 
 
