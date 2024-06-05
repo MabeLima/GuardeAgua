@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 
-
 class SplashScreenGuardeAgua extends StatefulWidget {
+  const SplashScreenGuardeAgua({super.key});
+
   @override
-  State<SplashScreenGuardeAgua> createState() => _SplashScreanGUardeAguaState();
+  State<SplashScreenGuardeAgua> createState() => _SplashScreenGuardeAguaState();
 }
 
-class _SplashScreanGUardeAguaState extends State<SplashScreenGuardeAgua> {
+class _SplashScreenGuardeAguaState extends State<SplashScreenGuardeAgua> {
   @override
   void initState() {
-    // espera 2 segundos e navega para a tela de login
     super.initState();
-    Future.delayed(Duration(seconds: 2),(){
-      Navigator.pushNamed(context, '/telaLogin');
+    // Espera 2 segundos e navega para a tela de login
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushNamed(context, '/telalogin');
     });
-    
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-         child: Image.asset('assets/images/logo2.jpeg'),
-      )
+        child: Image.asset('assets/images/embrapa.jpeg'),
+      ),
     );
   }
 }
