@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:guarde_agua/SplashScreenEmbrapa.dart';
 import 'package:guarde_agua/SplashScreenGuardeAgua.dart';
-import 'package:guarde_agua/telaCadastro.dart';
-import 'package:guarde_agua/telaCadastro2.dart';
-import 'package:guarde_agua/telaCadastro3.dart';
-import 'package:guarde_agua/telaLogin.dart';
+import 'package:guarde_agua/features/cadastro/presentation/pages/telaCadastro.dart';
+import 'package:guarde_agua/features/cadastro/presentation/pages/telaCadastro2.dart';
+import 'package:guarde_agua/features/cadastro/presentation/pages/telaCadastro3.dart';
+import 'package:guarde_agua/features/login/presentation/pages/telaLogin.dart';
 
 void main() {
   runApp(
