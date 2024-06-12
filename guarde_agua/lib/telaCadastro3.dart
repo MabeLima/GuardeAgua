@@ -67,7 +67,7 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
     }
   } catch (e) {
     // Se ocorrer um erro durante a solicitação, exibe o erro
-      print("Erro ao fazer login: $e");
+      print("Erro ao fazer cadastro: $e");
 
   }   
     } 

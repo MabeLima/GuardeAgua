@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
@@ -20,14 +21,33 @@ class _TelaLoginState extends State<TelaLogin> {
     Navigator.pushNamed(context, '/telaCadastro');
   }
 
-  void recuperarConta() {
+  void recuperarConta(){
     // Implementar recuperação de conta
   }
 
-  void fazerLogin(String email, String senha) {
+  void fazerLogin(String email, String senha) async{
     if (_formKey.currentState?.validate() ?? false) {
-      print("O valor do email é: $email");
-      print("O valor da senha é: $senha");
+
+       const Url = "http://192.168.0.77:3000/login";
+
+      Map<String,String> usuario = {
+        'email': email,
+        'senha': senha
+     };
+    try{
+      final response = await http.post(
+        Uri.parse(Url),body:usuario
+      );
+
+      if (response.statusCode == 200) {
+        print('Usuário presente no banco de dados');
+    } else {
+      // Se a resposta não foi bem-sucedida, exibe uma mensagem de erro
+      print("Falha ao fazer fazer login. Código de status: ${response.statusCode}");
+    }
+    }catch(e){
+      print('erro ao fazer login $e');
+    }
       // Aqui você chamaria o método que faz o login no backend
     }
   }
