@@ -5,8 +5,12 @@ class TelaCadastro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String tipoUsuario = '';
+
     void avancar() {
-      Navigator.pushNamed(context, '/telaCadastro2');
+      Navigator.pushNamed(context, '/telaCadastro2',arguments: {
+        'tipoUsuario': tipoUsuario
+      });
     }
 
     return Scaffold(
@@ -56,7 +60,10 @@ class TelaCadastro extends StatelessWidget {
               children: [
                 // botão técnico
                 TextButton(
-                  onPressed: avancar,
+                  onPressed: (){
+                    tipoUsuario = 'Técnico';
+                    avancar();
+                  },
                   child: Column(
                     children: [
                       // imagem técnico
@@ -81,7 +88,10 @@ class TelaCadastro extends StatelessWidget {
 
                 // botão agricultor
                 TextButton(
-                  onPressed: avancar,
+                  onPressed: (){
+                    tipoUsuario = 'Agricultor';
+                    avancar();
+                  },
                   child: Column(
                     children: [
                       // imagem agricultor

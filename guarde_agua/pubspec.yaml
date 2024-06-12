@@ -30,21 +30,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  http: ^0.13.3
   cupertino_icons: ^1.0.6
   brasil_fields: ^1.14.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
@@ -57,4 +49,3 @@ flutter:
     - assets/images/embrapa.jpeg
     - assets/images/logo2.jpeg
     - assets/images/tecnico.jpeg
-

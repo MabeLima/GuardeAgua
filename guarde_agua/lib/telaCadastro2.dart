@@ -15,6 +15,7 @@ class _TelaCadastro2State extends State<TelaCadastro2> {
   String sobrenome = '';
   String cpf = '';
   String email = '';
+  String usuario = '';
 
   bool validarCPF(String cpf) {
     return UtilBrasilFields.isCPFValido(cpf);
@@ -22,10 +23,27 @@ class _TelaCadastro2State extends State<TelaCadastro2> {
 
   @override
   Widget build(BuildContext context) {
+
+    //O operador de negação ! em Dart é usado para forçar uma expressão que pode ser null a não ser null. 
+    //No contexto de Flutter, o operador ! é usado frequentemente para acessar propriedades que podem ser nulas, 
+    //mas que você sabe (ou espera) que não sejam nulas em tempo de execução.
+    Map? tipoUsuario =  ModalRoute.of(context)!.settings.arguments as Map<String,String>;
+    usuario = tipoUsuario['tipoUsuario'];
+    //função avançar passando os parametros para a próxima tela
+    
     void avancar() {
       if (_formKey.currentState?.validate() ?? false) {
-        Navigator.pushNamed(context, '/telaCadastro3');
-      }
+        Navigator.pushNamed(context, '/telaCadastro3',arguments: {
+        'nome':nome,
+        'sobrenome':sobrenome,
+        'cpf':cpf,
+        'email':email,
+        'tipoUsuario': usuario
+          });
+        }
+        else{
+          print('Form inválido');
+        }
     }
 
     return Scaffold(
@@ -84,6 +102,9 @@ class _TelaCadastro2State extends State<TelaCadastro2> {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira o seu nome';
                   }
+                  else if(value.length < 2){
+                    return('Insira um nome válido');
+                  }
                   return null;
                 },
               ),
@@ -114,6 +135,9 @@ class _TelaCadastro2State extends State<TelaCadastro2> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira o seu sobrenome';
+                  }
+                  else if(value.length < 2){
+                    return('Sobrenome inválido');
                   }
                   return null;
                 },
@@ -151,9 +175,10 @@ class _TelaCadastro2State extends State<TelaCadastro2> {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira o seu CPF';
                   }
-                  if (!validarCPF(value)) {
+                  else if (!validarCPF(value)) {
                     return 'Por favor, insira um CPF válido';
                   }
+                  
                   return null;
                 },
               ),

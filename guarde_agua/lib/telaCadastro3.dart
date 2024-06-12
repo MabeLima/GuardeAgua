@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+// biblioteca para converter tipos json em map
 
 class TelaCadastro3 extends StatefulWidget {
   const TelaCadastro3({super.key});
@@ -9,6 +11,8 @@ class TelaCadastro3 extends StatefulWidget {
 
 class _TelaCadastro3State extends State<TelaCadastro3> {
   final _formKey = GlobalKey<FormState>();
+
+  //atributps da tela
   String estado = '';
   String cidade = '';
   String senha = '';
@@ -16,11 +20,62 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
 
   @override
   Widget build(BuildContext context) {
+
+    //base da url do servidor
+   const baseUrl = "http://192.168.0.77:3000/";
+
+  //recebimento dos parametros passados para uma variável "data" do tipo Map
+   Map? data = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
+
     void avancar() {
       if (_formKey.currentState?.validate() ?? false) {
-        Navigator.pushNamed(context, '/telaLogin');
+        Navigator.pushNamed(context, '/telalogin');
       }
     }
+
+     //função que solicita ao servidor o cadastramento de um usuário
+   CadastrarConta() async{
+    //contrução do usuário
+    if(_formKey.currentState!.validate()){
+      Map <String,String> novoUsuario = {
+      'tipoUsuario': data?['tipoUsuario'],
+      'nome': data?['nome'],
+      'sobrenome': data?['sobrenome'],
+      'cpf': data?['cpf'],
+      'email': data?['email'],
+      'estado': estado,
+      'cidade': cidade,
+      'senha': senha,
+   };
+    //url post de solicitação
+    String apiUrl = baseUrl + "cadastrar_usuario";
+  
+    try {
+    // Fazendo a solicitação POST para o servidor
+      final response = await http.post(
+      Uri.parse(apiUrl),
+      body: novoUsuario,
+  
+    );
+
+    // Verifica se a resposta foi bem-sucedida (código 200)
+    if (response.statusCode == 200) {
+      avancar();
+    } else {
+      // Se a resposta não foi bem-sucedida, exibe uma mensagem de erro
+      print("Falha ao fazer cadastro. Código de status: ${response.statusCode}");
+    }
+  } catch (e) {
+    // Se ocorrer um erro durante a solicitação, exibe o erro
+      print("Erro ao fazer login: $e");
+
+  }   
+    } 
+    else(){
+      print('Form inválido');
+    };
+   }
+
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -204,7 +259,7 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
                   ),
                 ),
                 child: TextButton(
-                  onPressed: avancar,
+                  onPressed: CadastrarConta,
                   child: const Text(
                     "Avançar",
                     style: TextStyle(
