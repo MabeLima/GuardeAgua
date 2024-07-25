@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   brasil_fields: ^1.14.3
+  flutter_native_splash: ^2.4.1
 
 dev_dependencies:
   flutter_test:
@@ -58,3 +59,15 @@ flutter:
     - assets/images/logo2.jpeg
     - assets/images/tecnico.jpeg
 
+flutter_native_splash:
+  web: false
+  color: "#06617C"
+  image: "assets/images/guardeagua-logo.png"
+  branding: "assets/images/embrapa-logo.png"
+
+
+  android_12:
+    color: "#06617C"
+    image: "assets/images/guardeagua-logo.png"
+    branding: "assets/images/embrapa-logo-android-12.png"
+    
