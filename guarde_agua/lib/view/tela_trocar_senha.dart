@@ -25,7 +25,7 @@ class _TelaTrocarSenhaState extends State<TelaTrocarSenha> {
             return TextButton(
                 iconAlignment: IconAlignment.start,
                 onPressed: () {
-                  print('pressed');
+                  Navigator.pop(context);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,9 +50,9 @@ class _TelaTrocarSenhaState extends State<TelaTrocarSenha> {
                 child: Column(
                   children: [
                     SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image.asset('images/logo2.jpeg'),
+                      width: 140,
+                      height: 140,
+                      child: Image.asset('assets/images/logo2.jpeg'),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
@@ -101,6 +101,7 @@ class _TelaTrocarSenhaState extends State<TelaTrocarSenha> {
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
                                 hintText: "Digite sua senha",
+                                hintStyle: TextStyle(fontSize: 12)
                               ),
                               onChanged: (value) {
                                 setState(() {
@@ -135,6 +136,7 @@ class _TelaTrocarSenhaState extends State<TelaTrocarSenha> {
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
                                 hintText: "Digite novamente sua senha",
+                                hintStyle: TextStyle(fontSize: 12)
                               ),
                               onChanged: (value) {
                                 setState(() {
@@ -173,7 +175,7 @@ class _TelaTrocarSenhaState extends State<TelaTrocarSenha> {
                   child: Text(
                     "Avançar",
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: AppColor.white,
                     ),
