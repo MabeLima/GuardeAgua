@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'constants/app-colors.dart';
+
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
 
@@ -21,33 +23,29 @@ class _TelaLoginState extends State<TelaLogin> {
     Navigator.pushNamed(context, '/telaCadastro');
   }
 
-  void recuperarConta(){
+  void recuperarConta() {
+    Navigator.pushNamed(context, '/telaTrocarSenha');
     // Implementar recuperação de conta
   }
 
-  void fazerLogin(String email, String senha) async{
+  void fazerLogin(String email, String senha) async {
     if (_formKey.currentState?.validate() ?? false) {
+      const Url = "http://192.168.0.77:3000/login";
 
-       const Url = "http://192.168.0.77:3000/login";
+      Map<String, String> usuario = {'email': email, 'senha': senha};
+      try {
+        final response = await http.post(Uri.parse(Url), body: usuario);
 
-      Map<String,String> usuario = {
-        'email': email,
-        'senha': senha
-     };
-    try{
-      final response = await http.post(
-        Uri.parse(Url),body:usuario
-      );
-
-      if (response.statusCode == 200) {
-        print('Usuário presente no banco de dados');
-    } else {
-      // Se a resposta não foi bem-sucedida, exibe uma mensagem de erro
-      print("Falha ao fazer fazer login. Código de status: ${response.statusCode}");
-    }
-    }catch(e){
-      print('erro ao fazer login $e');
-    }
+        if (response.statusCode == 200) {
+          print('Usuário presente no banco de dados');
+        } else {
+          // Se a resposta não foi bem-sucedida, exibe uma mensagem de erro
+          print(
+              "Falha ao fazer fazer login. Código de status: ${response.statusCode}");
+        }
+      } catch (e) {
+        print('erro ao fazer login $e');
+      }
       // Aqui você chamaria o método que faz o login no backend
     }
   }
@@ -78,6 +76,7 @@ class _TelaLoginState extends State<TelaLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.white,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
@@ -88,36 +87,46 @@ class _TelaLoginState extends State<TelaLogin> {
 
               // Imagem da logo
               SizedBox(
-                width: 170,
-                height: 170,
+                width: 140,
+                height: 140,
                 child: Image.asset("assets/images/logo2.jpeg"),
               ),
 
               const SizedBox(height: 25),
 
               // Texto de boas-vindas
-              const Center(
-                child: Text(
-                  "Bem Vindo ao GuardeÁgua",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Padding(
+                padding: const EdgeInsets.only(top: 24, bottom: 80),
+                child: Column(
+                  children: [
+                    Text(
+                      "Bem vindo ao GuardeÁgua",
+                      style: TextStyle(
+                          color: AppColor.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      "Faça seu login para entrar na plataforma",
+                      style: TextStyle(color: AppColor.black, fontSize: 14),
+                    ),
+                  ],
                 ),
               ),
-              const Center(
-                child: Text(
-                  "Faça seu login para entrar na plataforma",
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-
-              const SizedBox(height: 40),
 
               // Campo de email
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Email",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    color: AppColor.black,
+                    fontSize: 16,
+                  ),
                 ),
+              ),
+              const SizedBox(
+                height: 8,
               ),
               TextFormField(
                 onChanged: (value) {
@@ -127,25 +136,29 @@ class _TelaLoginState extends State<TelaLogin> {
                 },
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
-                  labelText: "Digite o seu email",
-                  labelStyle: TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                  ),
+                  border: OutlineInputBorder(),
+                  hintText: "Digite seu email",
+                  hintStyle: TextStyle(fontSize: 12)
                 ),
+             
                 validator: validarEmail,
               ),
 
               const SizedBox(height: 25),
 
               // Campo de senha
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Senha",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    color: AppColor.black,
+                    fontSize: 16,
+                  ),
                 ),
+              ),
+              const SizedBox(
+                height: 8,
               ),
               TextFormField(
                 onChanged: (value) {
@@ -156,13 +169,11 @@ class _TelaLoginState extends State<TelaLogin> {
                 keyboardType: TextInputType.text,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  labelText: "Digite sua senha",
-                  labelStyle: TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                  ),
+                  border: OutlineInputBorder(),
+                  hintText: "Digite sua senha",
+                  hintStyle: TextStyle(fontSize: 12)
                 ),
+               
                 validator: validarSenha,
               ),
 
@@ -172,7 +183,7 @@ class _TelaLoginState extends State<TelaLogin> {
                 children: [
                   TextButton(
                     onPressed: recuperarConta,
-                    child: const Text("Esqueci minha senha"),
+                    child: Text("Esqueci minha senha", style: TextStyle(color: AppColor.black, fontSize: 12, fontWeight: FontWeight.w100),),
                   ),
                 ],
               ),
@@ -195,23 +206,17 @@ class _TelaLoginState extends State<TelaLogin> {
                 ],
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 56),
 
               // Botão de login
               Container(
                 height: 60,
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    stops: [0.3, 1],
-                    colors: [
-                      Colors.blueAccent,
-                      Colors.blueGrey,
-                    ],
+                decoration: BoxDecoration(
+                  color: AppColor.blue,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(30),
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
                 ),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -219,25 +224,26 @@ class _TelaLoginState extends State<TelaLogin> {
                     shadowColor: Colors.transparent,
                   ),
                   onPressed: () => fazerLogin(email, senha),
-                  child: const Text(
+                  child: Text(
                     "Entrar",
                     style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                      color: AppColor.white,
+                    ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 5),
+              // const SizedBox(height: 2),
 
               // Botão para tela de cadastro
               Center(
                 child: TextButton(
                   onPressed: cadastrarConta,
-                  child: const Text(
+                  child: Text(
                     "Não possui conta? Cadastre-se",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                    style: TextStyle(color: AppColor.black,fontSize: 16, fontWeight: FontWeight.w400),
                   ),
                 ),
               ),
