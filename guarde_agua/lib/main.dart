@@ -5,6 +5,7 @@ import 'package:guarde_agua/telaCadastro.dart';
 import 'package:guarde_agua/telaCadastro2.dart';
 import 'package:guarde_agua/telaCadastro3.dart';
 import 'package:guarde_agua/telaLogin.dart';
+import 'package:guarde_agua/telaRecuperarConta.dart';
 
 void main() {
   runApp(
@@ -12,11 +13,12 @@ void main() {
       initialRoute: '/splashScreenEmbrapa',
       routes: {
         '/splashScreenEmbrapa': (context) => SplashScreenEmbrapa(),
-        '/splashScreenGuardeAgua': (context) => SplashScreenGuardeAgua(),
-        '/telalogin': (context) => TelaLogin(),
-        '/telaCadastro': (context) => TelaCadastro(),
-        '/telaCadastro2': (context) => TelaCadastro2(),
-        '/telaCadastro3': (context) => TelaCadastro3(),
+        '/splashScreenGuardeAgua': (context) => const SplashScreenGuardeAgua(),
+        '/telalogin': (context) => const TelaLogin(),
+        '/telaCadastro': (context) => const TelaCadastro(),
+        '/telaCadastro2': (context) => const TelaCadastro2(),
+        '/telaCadastro3': (context) => const TelaCadastro3(),
+         '/telaRecuperarConta': (context) => const RecuperarConta(),
       },
     ),
   );
