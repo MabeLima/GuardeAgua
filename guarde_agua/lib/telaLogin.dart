@@ -1,22 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
 
   @override
-  State<TelaLogin> createState() => _TelaLoginState();
+  State<TelaLogin> createState() => _TelaLoginState();    
 }
 
 class _TelaLoginState extends State<TelaLogin> {
   // Atributos de login
-  String email = '';
-  String senha = '';
+  final _storage = const FlutterSecureStorage();
+  final TextEditingController _email = TextEditingController(text:"");
+  final TextEditingController _senha = TextEditingController(text:"");
   bool manterConectado = false;
-
   final _formKey = GlobalKey<FormState>();
 
   // Métodos
+
+  //método que grava os dados caso o usuário selecione o checkbox "mantenha-me conectado"
+  void gravarDados() async {
+      if(_formKey.currentState?.validate() ?? false){
+        if(manterConectado){
+          await _storage.write(key: "email", value: _email.text);
+          print(_storage.read(key:'email'));
+          await _storage.write(key:"senha",value: _senha.text);
+          print(_storage.read(key:'senha'));
+        }
+        else{
+          await _storage.write(key:'email', value :"");
+          await _storage.write(key: 'senha',value:"");
+        }
+      }
+  }
+
+// método que lê os dados caso o usuário tenha selecionado o checkbox "mantenha-me conectado" 
+  Future<void> _lerDados() async {
+    _email.text = await _storage.read(key: "email") ?? '';
+    print('seu email é:' + _email.text);
+    _senha.text = await _storage.read(key: "senha") ?? '';
+    print('sua senha é:' + _senha.text);
+  }
+
   void cadastrarConta() {
     Navigator.pushNamed(context, '/telaCadastro');
   }
@@ -27,7 +53,6 @@ class _TelaLoginState extends State<TelaLogin> {
 
   void fazerLogin(String email, String senha) async{
     if (_formKey.currentState?.validate() ?? false) {
-
        const Url = "http://192.168.0.77:3000/login";
 
       Map<String,String> usuario = {
@@ -38,9 +63,9 @@ class _TelaLoginState extends State<TelaLogin> {
       final response = await http.post(
         Uri.parse(Url),body:usuario
       );
-
       if (response.statusCode == 200) {
         print('Usuário presente no banco de dados');
+        gravarDados();
     } else {
       // Se a resposta não foi bem-sucedida, exibe uma mensagem de erro
       print("Falha ao fazer fazer login. Código de status: ${response.statusCode}");
@@ -73,6 +98,12 @@ class _TelaLoginState extends State<TelaLogin> {
       return 'A senha deve ter pelo menos 8 caracteres';
     }
     return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _lerDados();
   }
 
   @override
@@ -120,9 +151,10 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
               ),
               TextFormField(
+                controller: _email,
                 onChanged: (value) {
                   setState(() {
-                    email = value;
+                    _email.text = value;
                   });
                 },
                 keyboardType: TextInputType.emailAddress,
@@ -148,9 +180,10 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
               ),
               TextFormField(
+                controller: _senha,
                 onChanged: (value) {
                   setState(() {
-                    senha = value;
+                    _senha.text = value;
                   });
                 },
                 keyboardType: TextInputType.text,
@@ -185,6 +218,7 @@ class _TelaLoginState extends State<TelaLogin> {
                     onChanged: (checked) {
                       setState(() {
                         manterConectado = checked ?? false;
+                        print(manterConectado);
                       });
                     },
                   ),
@@ -218,7 +252,7 @@ class _TelaLoginState extends State<TelaLogin> {
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
                   ),
-                  onPressed: () => fazerLogin(email, senha),
+                  onPressed: () => fazerLogin(_email.text, _senha.text),
                   child: const Text(
                     "Entrar",
                     style: TextStyle(
