@@ -201,7 +201,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   ),
                   const Text(
                     "Mantenha-me conectado",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                   ),
                 ],
               ),
@@ -227,7 +227,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   child: Text(
                     "Entrar",
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: AppColor.white,
                     ),
