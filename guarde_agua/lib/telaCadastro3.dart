@@ -1,31 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:estados_municipios/estados_municipios.dart';
+
 // biblioteca para converter tipos json em map
 
-class TelaCadastro3 extends StatefulWidget {
-  const TelaCadastro3({super.key});
+ class TelaCadastro3 extends StatefulWidget {
+  final dropValue = ValueNotifier('');
+   TelaCadastro3({super.key});
 
   @override
   State<TelaCadastro3> createState() => _TelaCadastro3State();
 }
 
-class _TelaCadastro3State extends State<TelaCadastro3> {
+class _TelaCadastro3State extends State<TelaCadastro3>{
   final _formKey = GlobalKey<FormState>();
 
   //atributps da tela
-  String estado = '';
-  String cidade = '';
+  final dropValueEstado = ValueNotifier('');
+  final dropValueCidade = ValueNotifier('');
+  List<String> estados = [];
+  String estadoSelecionado = '';
+  List<String> cidades = [];
+  String cidadeSelecionada = '';
   String senha = '';
   String confirmacaoSenha = '';
 
+  //função que atribui uma lista de estados brasileiros à variável estados
+   Future<void> pegarEstados() async {
+    final controller = EstadosMunicipiosController();
+    final listaEstados = await controller.buscaTodosEstados();
+    setState(() {
+      estados = listaEstados.map((e) => e.sigla).toList(); // Atualiza a lista de estados
+    });
+  }
+
+  //função que atribui uma lista de cidades brasileiras à variável cidades
+   Future<void> PegarCidades(String sigla) async {
+    cidadeSelecionada = "";
+    cidades = [];
+    final controller = EstadosMunicipiosController();
+    final listaCidades = await controller.buscaMunicipiosPorEstado(sigla);
+    setState(() {
+      cidades = listaCidades.map((e) => e.nome).toList();
+      if (cidades.isNotEmpty) {
+        cidadeSelecionada = '';
+        dropValueCidade.value = '';
+      }
+    });
+  }
+
+   @override
+  void initState() {
+    super.initState();
+    pegarEstados(); // Busca os estados no initState
+    PegarCidades('PE');
+  }
+  
   @override
   Widget build(BuildContext context) {
+
+    
 
     //base da url do servidor
    const baseUrl = "http://192.168.0.77:3000/";
 
   //recebimento dos parametros passados para uma variável "data" do tipo Map
    Map? data = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
+
 
     void avancar() {
       if (_formKey.currentState?.validate() ?? false) {
@@ -43,8 +85,8 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
       'sobrenome': data?['sobrenome'],
       'cpf': data?['cpf'],
       'email': data?['email'],
-      'estado': estado,
-      'cidade': cidade,
+      'estado': estadoSelecionado,
+      'cidade': cidadeSelecionada,
       'senha': senha,
    };
     //url post de solicitação
@@ -52,18 +94,13 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
   
     try {
     // Fazendo a solicitação POST para o servidor
-      final response = await http.post(
-      Uri.parse(apiUrl),
-      body: novoUsuario,
-  
-    );
-
+      final response = await http.post(Uri.parse(apiUrl),body: novoUsuario,);
     // Verifica se a resposta foi bem-sucedida (código 200)
-    if (response.statusCode == 200) {
+    if(response.statusCode ==200){
       avancar();
-    } else {
-      // Se a resposta não foi bem-sucedida, exibe uma mensagem de erro
-      print("Falha ao fazer cadastro. Código de status: ${response.statusCode}");
+    }
+    else{
+      print("erro ao criar usuário");
     }
   } catch (e) {
     // Se ocorrer um erro durante a solicitação, exibe o erro
@@ -86,12 +123,13 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // imagem da logo
-              SizedBox(
-                width: 170,
-                height: 170,
-                child: Image.asset("assets/images/logo2.jpeg"),
+               Center(
+                child: SizedBox(
+                  width: 170,
+                  height: 170,
+                  child: Image.asset("assets/images/logo2.jpeg"),        
+                ),
               ),
-
               // texto abaixo da logo
               const Center(
                 child: Text(
@@ -115,26 +153,35 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
               ),
 
               // campo de preenchimento do Estado
-              TextFormField(
-                onChanged: (value) {
-                  setState(() {
-                    estado = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  labelText: "Digite o seu estado",
-                  labelStyle: TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o seu estado';
-                  }
-                  return null;
-                },
+               ValueListenableBuilder(
+                valueListenable: dropValueEstado, 
+                builder: (BuildContext, String value, _){
+                  return SizedBox(
+                    width: 280,
+                    child: DropdownButtonFormField<String>(
+                      isExpanded: true,
+                      icon: const Icon(Icons.arrow_drop_down_sharp),
+                      hint: const Text('Estados'),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        )
+                      ),
+                      value: (value.isEmpty) ? null : value,
+                      onChanged: (escolha){
+                        dropValueEstado.value = escolha.toString();
+                        estadoSelecionado = dropValueEstado.value;
+                        PegarCidades(estadoSelecionado);
+                      },
+                      items: estados.map((op) => DropdownMenuItem(
+                        value: op,
+                        child: Text(op),
+                      )).toList(),
+                      
+                    ),
+                  );
+                }
+                
               ),
 
               const SizedBox(height: 15),
@@ -146,26 +193,34 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
               ),
 
               // campo de preenchimento da cidade
-              TextFormField(
-                onChanged: (value) {
-                  setState(() {
-                    cidade = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                  labelText: "Digite a cidade onde você mora",
-                  labelStyle: TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira a sua cidade';
-                  }
-                  return null;
-                },
+              ValueListenableBuilder(
+                valueListenable: dropValueCidade, 
+                builder: (BuildContext, String value, _){
+                  return SizedBox(
+                    width: 280,
+                    child: DropdownButtonFormField<String>(
+                      isExpanded: true,
+                      icon: const Icon(Icons.arrow_drop_down_sharp),
+                      hint: const Text('Cidades'),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        )
+                      ),
+                      value: (value.isEmpty) ? null : value,
+                      onChanged: (escolha){
+                        dropValueCidade.value = escolha.toString();
+                        cidadeSelecionada = dropValueCidade.value;
+                      },
+                      items: cidades.map((op) => DropdownMenuItem(
+                        value: op,
+                        child: Text(op),
+                      )).toList(),
+                      
+                    ),
+                  );
+                }
+                
               ),
 
               const SizedBox(height: 15),
