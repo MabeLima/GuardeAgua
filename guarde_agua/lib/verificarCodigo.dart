@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:guarde_agua/verificarCodigo.dart';
+import 'package:guarde_agua/criarNovaSenha.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class RecuperarConta extends StatefulWidget {
-  const RecuperarConta({super.key});
+class VerificarCodigo extends StatefulWidget {
+  final String email;
+
+  const VerificarCodigo({Key? key, required this.email}) : super(key: key);
 
   @override
-  State<RecuperarConta> createState() => _RecuperarContaState();
+  State<VerificarCodigo> createState() => _VerificarCodigoState();
 }
 
-class _RecuperarContaState extends State<RecuperarConta> {
-  String email = '';
+class _VerificarCodigoState extends State<VerificarCodigo> {
+  String codigo = '1234';
 
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> enviarRecuperacao() async {
+  Future<void> verificarCodigo() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
         var url = Uri.parse('URL_DA_API');
-        var body = jsonEncode({'email': email});
+        var body = jsonEncode({'email': widget.email, 'token': codigo});
         var response = await http.post(
           url,
           headers: {'Content-Type': 'application/json'},
@@ -28,18 +30,18 @@ class _RecuperarContaState extends State<RecuperarConta> {
 
         if (response.statusCode == 200) {
           var responseData = jsonDecode(response.body);
-          print('Recuperação de senha: $responseData');
+          print('Verificação de código: $responseData');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Um email de recuperação foi enviado.')),
+            SnackBar(content: Text('Código verificado com sucesso.')),
           );
-          // Navegar para a tela de verificação do código
+          // Navegar para a tela de criar nova senha
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => VerificarCodigo(email: email)),
+            MaterialPageRoute(builder: (context) => CriarNovaSenha(email: widget.email)),
           );
         } else {
           var error = jsonDecode(response.body);
-          print('Erro na recuperação de senha: ${error['message']}');
+          print('Erro na verificação de código: ${error['message']}');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Erro: ${error['message']}')),
           );
@@ -53,14 +55,12 @@ class _RecuperarContaState extends State<RecuperarConta> {
     }
   }
 
-  String? validarEmail(String? value) {
+  String? validarCodigo(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Por favor, insira um email';
+      return 'Por favor, insira o código';
     }
-    String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-    RegExp regex = RegExp(pattern);
-    if (!regex.hasMatch(value)) {
-      return 'Por favor, insira um email válido';
+    if (value.length != 4) {
+      return 'O código deve ter 4 dígitos';
     }
     return null;
   }
@@ -69,7 +69,7 @@ class _RecuperarContaState extends State<RecuperarConta> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recuperar Conta'),
+        title: Text('Verificar Código'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -80,7 +80,7 @@ class _RecuperarContaState extends State<RecuperarConta> {
               const SizedBox(height: 30),
               const Center(
                 child: Text(
-                  "Digite seu email para recuperar sua conta",
+                  "Digite o código de 4 dígitos enviado para seu email",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
@@ -94,26 +94,26 @@ class _RecuperarContaState extends State<RecuperarConta> {
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Email",
+                  "Código",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
               ),
               TextFormField(
                 onChanged: (value) {
                   setState(() {
-                    email = value;
+                    codigo = value;
                   });
                 },
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
-                  labelText: "Digite o seu email",
+                  labelText: "Digite o código",
                   labelStyle: TextStyle(
                     color: Colors.black38,
                     fontWeight: FontWeight.w400,
                     fontSize: 20,
                   ),
                 ),
-                validator: validarEmail,
+                validator: validarCodigo,
               ),
               const SizedBox(height: 40),
               Container(
@@ -136,9 +136,9 @@ class _RecuperarContaState extends State<RecuperarConta> {
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
                   ),
-                  onPressed: enviarRecuperacao,
+                  onPressed: verificarCodigo,
                   child: const Text(
-                    "Enviar",
+                    "Verificar",
                     style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:guarde_agua/verificarCodigo.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:http/http.dart' as http; // Importação necessária
+import 'dart:convert'; // Importar para o uso de jsonEncode e jsonDecode
 
-class RecuperarConta extends StatefulWidget {
-  const RecuperarConta({super.key});
+class CriarNovaSenha extends StatefulWidget {
+  final String email;
+
+  const CriarNovaSenha({Key? key, required this.email}) : super(key: key);
 
   @override
-  State<RecuperarConta> createState() => _RecuperarContaState();
+  State<CriarNovaSenha> createState() => _CriarNovaSenhaState();
 }
 
-class _RecuperarContaState extends State<RecuperarConta> {
-  String email = '';
+class _CriarNovaSenhaState extends State<CriarNovaSenha> {
+  String novaSenha = '';
+  String confirmarSenha = '';
 
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> enviarRecuperacao() async {
+  Future<void> criarNovaSenha() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        var url = Uri.parse('URL_DA_API');
-        var body = jsonEncode({'email': email});
+        var url = Uri.parse('URL_DA_API'); // Substitua pela URL correta
+        var body = jsonEncode({'email': widget.email, 'password': novaSenha});
         var response = await http.post(
           url,
           headers: {'Content-Type': 'application/json'},
@@ -28,18 +30,15 @@ class _RecuperarContaState extends State<RecuperarConta> {
 
         if (response.statusCode == 200) {
           var responseData = jsonDecode(response.body);
-          print('Recuperação de senha: $responseData');
+          print('Criação de nova senha: $responseData');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Um email de recuperação foi enviado.')),
+            SnackBar(content: Text('Senha alterada com sucesso.')),
           );
-          // Navegar para a tela de verificação do código
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => VerificarCodigo(email: email)),
-          );
+          // Navegar para a tela de login ou outra tela
+          Navigator.pushReplacementNamed(context, '/login');
         } else {
           var error = jsonDecode(response.body);
-          print('Erro na recuperação de senha: ${error['message']}');
+          print('Erro na criação de nova senha: ${error['message']}');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Erro: ${error['message']}')),
           );
@@ -53,14 +52,22 @@ class _RecuperarContaState extends State<RecuperarConta> {
     }
   }
 
-  String? validarEmail(String? value) {
+  String? validarSenha(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Por favor, insira um email';
+      return 'Por favor, insira uma senha';
     }
-    String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-    RegExp regex = RegExp(pattern);
-    if (!regex.hasMatch(value)) {
-      return 'Por favor, insira um email válido';
+    if (value.length < 6) {
+      return 'A senha deve ter pelo menos 6 caracteres';
+    }
+    return null;
+  }
+
+  String? confirmarSenhaValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, confirme sua senha';
+    }
+    if (value != novaSenha) {
+      return 'As senhas não coincidem';
     }
     return null;
   }
@@ -69,7 +76,7 @@ class _RecuperarContaState extends State<RecuperarConta> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recuperar Conta'),
+        title: Text('Criar Nova Senha'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -80,7 +87,7 @@ class _RecuperarContaState extends State<RecuperarConta> {
               const SizedBox(height: 30),
               const Center(
                 child: Text(
-                  "Digite seu email para recuperar sua conta",
+                  "Crie uma nova senha",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
@@ -94,26 +101,51 @@ class _RecuperarContaState extends State<RecuperarConta> {
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Email",
+                  "Nova Senha",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
               ),
               TextFormField(
                 onChanged: (value) {
                   setState(() {
-                    email = value;
+                    novaSenha = value;
                   });
                 },
-                keyboardType: TextInputType.emailAddress,
+                obscureText: true,
                 decoration: const InputDecoration(
-                  labelText: "Digite o seu email",
+                  labelText: "Digite a nova senha",
                   labelStyle: TextStyle(
                     color: Colors.black38,
                     fontWeight: FontWeight.w400,
                     fontSize: 20,
                   ),
                 ),
-                validator: validarEmail,
+                validator: validarSenha,
+              ),
+              const SizedBox(height: 20),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Confirmar Senha",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                ),
+              ),
+              TextFormField(
+                onChanged: (value) {
+                  setState(() {
+                    confirmarSenha = value;
+                  });
+                },
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Confirme a nova senha",
+                  labelStyle: TextStyle(
+                    color: Colors.black38,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20,
+                  ),
+                ),
+                validator: confirmarSenhaValidator,
               ),
               const SizedBox(height: 40),
               Container(
@@ -136,9 +168,9 @@ class _RecuperarContaState extends State<RecuperarConta> {
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
                   ),
-                  onPressed: enviarRecuperacao,
+                  onPressed: criarNovaSenha,
                   child: const Text(
-                    "Enviar",
+                    "Salvar",
                     style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

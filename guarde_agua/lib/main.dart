@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:guarde_agua/SplashScreenEmbrapa.dart';
 import 'package:guarde_agua/SplashScreenGuardeAgua.dart';
+import 'package:guarde_agua/criarNovaSenha.dart';
+import 'package:guarde_agua/verificarCodigo.dart';
 import 'package:guarde_agua/telaCadastro.dart';
 import 'package:guarde_agua/telaCadastro2.dart';
 import 'package:guarde_agua/telaCadastro3.dart';
@@ -19,6 +21,8 @@ void main() {
         '/telaCadastro2': (context) => const TelaCadastro2(),
         '/telaCadastro3': (context) => const TelaCadastro3(),
          '/telaRecuperarConta': (context) => const RecuperarConta(),
+         '/verificarCodigo': (context) => const VerificarCodigo(email: '',),
+         '/criarNovaSenha': (context) => const CriarNovaSenha(email: '',),
       },
     ),
   );

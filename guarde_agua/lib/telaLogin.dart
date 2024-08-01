@@ -21,7 +21,7 @@ class _TelaLoginState extends State<TelaLogin> {
   }
 
   void recuperarConta() {
-    // Implementar recuperação de conta
+    Navigator.pushNamed(context, '/telaRecuperarConta');
   }
 
   void fazerLogin(String email, String senha) {
