@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'constants/app-colors.dart';
+
 class TelaCadastro extends StatelessWidget {
   const TelaCadastro({super.key});
 
@@ -8,46 +10,74 @@ class TelaCadastro extends StatelessWidget {
     String tipoUsuario = '';
 
     void avancar() {
-      Navigator.pushNamed(context, '/telaCadastro2',arguments: {
-        'tipoUsuario': tipoUsuario
-      });
+      Navigator.pushNamed(context, '/telaCadastro2',
+          arguments: {'tipoUsuario': tipoUsuario});
     }
 
     return Scaffold(
+      backgroundColor: AppColor.white,
+        appBar: AppBar(
+          backgroundColor: AppColor.white,
+          leadingWidth: 90,
+          leading: Builder(builder: (BuildContext context) {
+            return TextButton(
+                iconAlignment: IconAlignment.start,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 14,
+                      color: AppColor.black,
+                    ),
+                    
+                    Text("voltar", style: TextStyle(color: AppColor.black, fontSize: 14),)
+                  ],
+                ));
+          }),
+        ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           children: [
             // imagem da logo
             SizedBox(
-              width: 170,
-              height: 170,
+              width: 80,
+              height: 80,
               child: Image.asset("assets/images/logo2.jpeg"),
             ),
 
-            // texto abaixo da logo
-            const Center(
-              child: Text(
-                "Bem Vindo ao GuardeÁgua",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const Center(
-              child: Text(
-                "Faça seu login para entrar na plataforma",
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
+            const SizedBox(height: 20),
 
-            // espaçamento
-            const SizedBox(height: 40),
+            // Texto de boas-vindas
+            Padding(
+              padding: EdgeInsets.only( bottom: 32),
+              child: Column(
+                children: [
+                  Text(
+                    "Bem vindo ao GuardeÁgua",
+                    style: TextStyle(
+                        color: AppColor.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    "Cadastre-se gratuitamente na plataforma",
+                    style: TextStyle(color: AppColor.black, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
 
             // texto de "Sou" acima das imagens
             Row(
-              children: const [
+              children: [
                 Text(
                   'Sou',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  style: TextStyle(color: AppColor.black,fontSize: 16, fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -60,14 +90,14 @@ class TelaCadastro extends StatelessWidget {
               children: [
                 // botão técnico
                 TextButton(
-                  onPressed: (){
+                  onPressed: () {
                     tipoUsuario = 'Técnico';
                     avancar();
                   },
                   child: Column(
                     children: [
                       // imagem técnico
-                      SizedBox(
+                      Container(
                         height: 150,
                         width: 150,
                         child: Image.asset('assets/images/tecnico.jpeg'),
@@ -88,14 +118,14 @@ class TelaCadastro extends StatelessWidget {
 
                 // botão agricultor
                 TextButton(
-                  onPressed: (){
+                  onPressed: () {
                     tipoUsuario = 'Agricultor';
                     avancar();
                   },
                   child: Column(
                     children: [
                       // imagem agricultor
-                      SizedBox(
+                     Container(
                         height: 150,
                         width: 150,
                         child: Image.asset('assets/images/agricultor.jpeg'),

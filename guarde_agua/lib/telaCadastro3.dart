@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import 'constants/app-colors.dart';
 // biblioteca para converter tipos json em map
 
 class TelaCadastro3 extends StatefulWidget {
@@ -78,31 +80,66 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
 
 
     return Scaffold(
+       backgroundColor: AppColor.white,
+      appBar: AppBar(
+        backgroundColor: AppColor.white,
+        leadingWidth: 90,
+        leading: Builder(builder: (BuildContext context) {
+          return TextButton(
+              iconAlignment: IconAlignment.start,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 14,
+                    color: AppColor.black,
+                  ),
+                  Text(
+                    "voltar",
+                    style: TextStyle(color: AppColor.black, fontSize: 14),
+                  )
+                ],
+              ));
+        }),
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 8.0, bottom: 32),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // imagem da logo
-              SizedBox(
-                width: 170,
-                height: 170,
-                child: Image.asset("assets/images/logo2.jpeg"),
-              ),
-
-              // texto abaixo da logo
-              const Center(
-                child: Text(
-                  "Bem Vindo ao GuardeÁgua",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Center(
+                child: // imagem da logo
+                    SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Image.asset("assets/images/logo2.jpeg"),
                 ),
               ),
-              const Center(
-                child: Text(
-                  "Faça seu login para entrar na plataforma",
-                  style: TextStyle(fontSize: 16),
+              const SizedBox(height: 20),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only( bottom: 32),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Bem vindo ao GuardeÁgua",
+                        style: TextStyle(
+                            color: AppColor.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        "Cadastrar técnico",
+                        style: TextStyle(color: AppColor.black, fontSize: 14),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
@@ -111,7 +148,7 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
               // texto "Informe o seu estado"
               const Text(
                 'Informe o seu estado',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 16,),
               ),
 
               // campo de preenchimento do Estado
@@ -122,13 +159,9 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
                   });
                 },
                 decoration: const InputDecoration(
-                  labelText: "Digite o seu estado",
-                  labelStyle: TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                  ),
-                ),
+                    border: OutlineInputBorder(),
+                    hintText: "Selecione seu estado",
+                    hintStyle: TextStyle(fontSize: 12)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira o seu estado';
@@ -137,12 +170,12 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
                 },
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 32),
 
               // texto "Informe sua Cidade"
               const Text(
                 'Informe sua Cidade',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 16),
               ),
 
               // campo de preenchimento da cidade
@@ -153,13 +186,9 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
                   });
                 },
                 decoration: const InputDecoration(
-                  labelText: "Digite a cidade onde você mora",
-                  labelStyle: TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                  ),
-                ),
+                    border: OutlineInputBorder(),
+                    hintText: "Selecione a sua cidade",
+                    hintStyle: TextStyle(fontSize: 12)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira a sua cidade';
@@ -168,12 +197,12 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
                 },
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 32),
 
               // texto de "Crie sua senha"
               const Text(
                 'Crie sua senha',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 16, ),
               ),
 
               // campo de preenchimento da senha
@@ -185,13 +214,9 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
                 },
                 obscureText: true,
                 decoration: const InputDecoration(
-                  labelText: "Digite sua senha",
-                  labelStyle: TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                  ),
-                ),
+                    border: OutlineInputBorder(),
+                    hintText: "Digite o sua senha",
+                    hintStyle: TextStyle(fontSize: 12)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira a sua senha';
@@ -203,12 +228,12 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
                 },
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 32),
 
               // texto de "Confirme sua senha"
               const Text(
                 'Confirme sua senha',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 16),
               ),
 
               // campo de preenchimento da senha
@@ -220,13 +245,9 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
                 },
                 obscureText: true,
                 decoration: const InputDecoration(
-                  labelText: "Digite novamente a sua senha",
-                  labelStyle: TextStyle(
-                    color: Colors.black38,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                  ),
-                ),
+                    border: OutlineInputBorder(),
+                    hintText: "Digite novamente sua senha",
+                    hintStyle: TextStyle(fontSize: 12)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, confirme a sua senha';
@@ -238,23 +259,15 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
                 },
               ),
 
-              const SizedBox(height: 60),
+              const SizedBox(height: 56),
 
               // botão de avançar
               Container(
                 height: 60,
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    stops: [0.3, 1],
-                    colors: [
-                      Colors.blueAccent,
-                      Colors.blueGrey,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.all(
+               decoration: BoxDecoration(
+                  color: AppColor.blue,
+                  borderRadius: const BorderRadius.all(
                     Radius.circular(30),
                   ),
                 ),
@@ -263,8 +276,8 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
                   child: const Text(
                     "Avançar",
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
                       color: Colors.white,
                     ),
                   ),
