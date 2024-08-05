@@ -238,15 +238,7 @@ class _TelaCadastro2State extends State<TelaCadastro2> {
                 height: 60,
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    stops: [0.3, 1],
-                    colors: [
-                      Colors.blueAccent,
-                      Colors.blueGrey,
-                    ],
-                  ),
+                  color: Color.fromRGBO(6, 93, 124, 1),
                   borderRadius: BorderRadius.all(
                     Radius.circular(30),
                   ),

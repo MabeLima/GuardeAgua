@@ -47,8 +47,8 @@ class _TelaLoginState extends State<TelaLogin> {
     Navigator.pushNamed(context, '/telaCadastro');
   }
 
-  void recuperarConta(){
-    // Implementar recuperação de conta
+  void recuperarConta() {
+    Navigator.pushNamed(context, '/telaRecuperarConta');
   }
 
   void fazerLogin(String email, String senha) async{
@@ -236,15 +236,7 @@ class _TelaLoginState extends State<TelaLogin> {
                 height: 60,
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    stops: [0.3, 1],
-                    colors: [
-                      Colors.blueAccent,
-                      Colors.blueGrey,
-                    ],
-                  ),
+                  color: Color.fromRGBO(6, 93, 124, 1),
                   borderRadius: BorderRadius.all(Radius.circular(30)),
                 ),
                 child: ElevatedButton(
