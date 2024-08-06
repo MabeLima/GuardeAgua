@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class TelaCadastro3 extends StatefulWidget {
   const TelaCadastro3({super.key});
@@ -14,14 +16,37 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
   String senha = '';
   String confirmacaoSenha = '';
 
-  @override
-  Widget build(BuildContext context) {
-    void avancar() {
-      if (_formKey.currentState?.validate() ?? false) {
-        Navigator.pushNamed(context, '/telaLogin');
+  Future<void> avancar() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      // Enviar os dados para a API de registro
+      final response = await http.post(
+        Uri.parse('http://192.168.3.6:8080/api/users/register2'), // Endpoint correto
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'estado': estado,
+          'cidade': cidade,
+          'senha': senha,
+          'confirmasenha': confirmacaoSenha,  // Campo de confirmação de senha
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.pushNamed(context, '/telalogin');
+      } else {
+        // Trate o erro detalhado se o backend fornecer uma mensagem de erro
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao registrar. ${response.body}'),
+          ),
+        );
       }
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -30,14 +55,14 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // imagem da logo
+              // Imagem da logo
               SizedBox(
                 width: 170,
                 height: 170,
                 child: Image.asset("assets/images/logo2.jpeg"),
               ),
 
-              // texto abaixo da logo
+              // Texto abaixo da logo
               const Center(
                 child: Text(
                   "Bem Vindo ao GuardeÁgua",
@@ -46,20 +71,20 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
               ),
               const Center(
                 child: Text(
-                  "Faça seu login para entrar na plataforma",
+                  "Complete seu cadastro para acessar a plataforma",
                   style: TextStyle(fontSize: 16),
                 ),
               ),
 
               const SizedBox(height: 25),
 
-              // texto "Informe o seu estado"
+              // Texto "Informe o seu estado"
               const Text(
                 'Informe o seu estado',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
 
-              // campo de preenchimento do Estado
+              // Campo de preenchimento do Estado
               TextFormField(
                 onChanged: (value) {
                   setState(() {
@@ -84,13 +109,13 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
 
               const SizedBox(height: 15),
 
-              // texto "Informe sua Cidade"
+              // Texto "Informe sua Cidade"
               const Text(
                 'Informe sua Cidade',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
 
-              // campo de preenchimento da cidade
+              // Campo de preenchimento da cidade
               TextFormField(
                 onChanged: (value) {
                   setState(() {
@@ -115,13 +140,13 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
 
               const SizedBox(height: 15),
 
-              // texto de "Crie sua senha"
+              // Texto de "Crie sua senha"
               const Text(
                 'Crie sua senha',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
 
-              // campo de preenchimento da senha
+              // Campo de preenchimento da senha
               TextFormField(
                 onChanged: (value) {
                   setState(() {
@@ -150,13 +175,13 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
 
               const SizedBox(height: 15),
 
-              // texto de "Confirme sua senha"
+              // Texto de "Confirme sua senha"
               const Text(
                 'Confirme sua senha',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
 
-              // campo de preenchimento da senha
+              // Campo de preenchimento da confirmação da senha
               TextFormField(
                 onChanged: (value) {
                   setState(() {
@@ -185,7 +210,7 @@ class _TelaCadastro3State extends State<TelaCadastro3> {
 
               const SizedBox(height: 60),
 
-              // botão de avançar
+              // Botão de avançar
               Container(
                 height: 60,
                 width: double.infinity,

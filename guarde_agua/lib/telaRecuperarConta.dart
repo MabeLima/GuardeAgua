@@ -10,9 +10,17 @@ class RecuperarConta extends StatefulWidget {
   State<RecuperarConta> createState() => _RecuperarContaState();
 }
 
+
+
 class _RecuperarContaState extends State<RecuperarConta> {
   String email = '';
 
+ 
+ void login() {
+      Navigator.pushNamed(context, '/telalogin');
+    }
+ 
+ 
   final _formKey = GlobalKey<FormState>();
 
   Future<void> enviarRecuperacao() async {
@@ -143,6 +151,18 @@ class _RecuperarContaState extends State<RecuperarConta> {
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30), // Espaçamento antes do botão de login
+
+              // Botão para tela de cadastro
+              Center(
+                child: TextButton(
+                  onPressed: login,
+                  child: const Text(
+                    "Já possui conta? Faça o login",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
                   ),
                 ),
               ),

@@ -24,6 +24,7 @@ class _TelaLoginState extends State<TelaLogin> {
     Navigator.pushNamed(context, '/telaRecuperarConta');
   }
 
+
   void fazerLogin(String email, String senha) {
     if (_formKey.currentState?.validate() ?? false) {
       print("O valor do email é: $email");
