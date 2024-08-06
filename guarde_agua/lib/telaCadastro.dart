@@ -44,11 +44,13 @@ class TelaCadastro extends StatelessWidget {
         child: Column(
           children: [
             // imagem da logo
-            SizedBox(
-              width: 80,
-              height: 80,
-              child: Image.asset("assets/images/logo2.jpeg"),
-            ),
+            Center(
+                child: SizedBox(
+                  width: 170,
+                  height: 170,
+                  child: Image.asset("assets/images/logo2.jpeg"),
+                ),
+                ),
 
             const SizedBox(height: 20),
 

@@ -81,37 +81,28 @@ class _TelaCadastro2State extends State<TelaCadastro2> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // imagem da logo
               Center(
-                child: // imagem da logo
-                    SizedBox(
-                  width: 80,
-                  height: 80,
+                child: SizedBox(
+                  width: 170,
+                  height: 170,
                   child: Image.asset("assets/images/logo2.jpeg"),
                 ),
               ),
-              const SizedBox(height: 20),
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.only( bottom: 32),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Bem vindo ao GuardeÁgua",
-                        style: TextStyle(
-                            color: AppColor.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        "Cadastrar técnico",
-                        style: TextStyle(color: AppColor.black, fontSize: 14),
-                      ),
-                    ],
-                  ),
+
+              // texto abaixo da logo
+              const Center(
+                child: Text(
+                  "Bem Vindo ao GuardeÁgua",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
-
-              // Texto de boas-vindas
+              const Center(
+                child: Text(
+                  "Faça seu login para entrar na plataforma",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
 
               const SizedBox(height: 25),
 
@@ -254,9 +245,9 @@ class _TelaCadastro2State extends State<TelaCadastro2> {
               Container(
                 height: 60,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColor.blue,
-                  borderRadius: const BorderRadius.all(
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(6, 93, 124, 1),
+                  borderRadius: BorderRadius.all(
                     Radius.circular(30),
                   ),
                 ),
