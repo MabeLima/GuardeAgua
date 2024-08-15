@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:guarde_agua/constants/app-colors.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
+
 
 
 class TelaLogin extends StatefulWidget {
@@ -13,6 +16,8 @@ class TelaLogin extends StatefulWidget {
 
 class _TelaLoginState extends State<TelaLogin> {
   // Atributos de login
+  Position? _initPositionGeo;
+  LatLng? _initialPosition;
   final _storage = const FlutterSecureStorage();
   final TextEditingController _email = TextEditingController(text:"");
   final TextEditingController _senha = TextEditingController(text:"");
@@ -20,6 +25,31 @@ class _TelaLoginState extends State<TelaLogin> {
   final _formKey = GlobalKey<FormState>();
 
   // Métodos
+ void _setInitialPosition() async {
+    _initPositionGeo = await Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+      ),
+    );
+    if (mounted) {
+      setState(() {
+        _initialPosition =
+            LatLng(_initPositionGeo!.latitude, _initPositionGeo!.longitude);
+      });
+    }
+  }
+
+  void _solicitarPermissao() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+
+    if (permission == LocationPermission.denied) {
+      print('Permissão de localização negada');
+    } else if (permission == LocationPermission.deniedForever) {
+      print('Permissão negada permanentemente');
+    } else {
+      _setInitialPosition();
+    }
+  }
 
   //método que grava os dados caso o usuário selecione o checkbox "mantenha-me conectado"
   void gravarDados() async {
@@ -69,6 +99,7 @@ class _TelaLoginState extends State<TelaLogin> {
       if (response.statusCode == 200) {
         print('Usuário presente no banco de dados');
         gravarDados();
+        Navigator.pushNamed(context, '/telaGeolocalizacao',arguments: _initialPosition);
     } else {
       // Se a resposta não foi bem-sucedida, exibe uma mensagem de erro
       print("Falha ao fazer fazer login. Código de status: ${response.statusCode}");
@@ -107,6 +138,7 @@ class _TelaLoginState extends State<TelaLogin> {
   void initState() {
     super.initState();
     _lerDados();
+    _solicitarPermissao();
   }
 
   @override

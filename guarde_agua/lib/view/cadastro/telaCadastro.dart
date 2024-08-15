@@ -145,6 +145,24 @@ class TelaCadastro extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 120,
+            ),
+            Center(
+                  child: TextButton(
+                   onPressed: () {
+                   Navigator.pop(context);
+                     },
+                   child: const Text(
+                    'Já possui conta? Faça login',
+                  style: TextStyle(
+                     fontSize: 15,
+                     fontWeight: FontWeight.w400,
+                     color: Colors.black,
+                     ),
+                        ),
+                      ),
+                       )
           ],
         ),
       ),

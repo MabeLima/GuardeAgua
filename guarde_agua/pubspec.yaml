@@ -30,13 +30,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.3
+  http: ^1.2.1
   cupertino_icons: ^1.0.6
   brasil_fields: ^1.14.3
   flutter_secure_storage: ^9.2.2
-  estados_municipios: ^2.0.2
   flutter_native_splash: ^2.4.1
   google_fonts: ^4.0.4
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  geolocator: ^13.0.1
 
 dev_dependencies:
   flutter_test:

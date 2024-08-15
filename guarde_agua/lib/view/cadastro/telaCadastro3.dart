@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:guarde_agua/view/cadastro/models/Cidade.dart';
+import 'package:guarde_agua/view/cadastro/models/Estado.dart';
+import 'package:guarde_agua/view/cadastro/models/FuncaoEstadosCidades.dart';
 import 'package:http/http.dart' as http;
-import 'package:estados_municipios/estados_municipios.dart';
 import 'package:guarde_agua/constants/app-colors.dart';
+
 
 // biblioteca para converter tipos json em map
 
@@ -20,42 +23,42 @@ class _TelaCadastro3State extends State<TelaCadastro3>{
   //atributps da tela
   final dropValueEstado = ValueNotifier('');
   final dropValueCidade = ValueNotifier('');
-  List<String> estados = [];
+  List<Cidade> _cidades = [];
+  List<Estado> _estados = [];
   String estadoSelecionado = '';
-  List<String> cidades = [];
   String cidadeSelecionada = '';
   String senha = '';
   String confirmacaoSenha = '';
 
   //função que atribui uma lista de estados brasileiros à variável estados
-   Future<void> pegarEstados() async {
-    final controller = EstadosMunicipiosController();
-    final listaEstados = await controller.buscaTodosEstados();
-    setState(() {
-      estados = listaEstados.map((e) => e.sigla).toList(); // Atualiza a lista de estados
-    });
+   Future<void> _carregarEstados() async {
+      try{
+        List<Estado> estados = await fetchEstados();
+        setState(() {
+          _estados = estados;
+        });
+      }catch(e){
+        print(e);
+      }
   }
 
   //função que atribui uma lista de cidades brasileiras à variável cidades
-   Future<void> PegarCidades(String sigla) async {
-    cidadeSelecionada = "";
-    cidades = [];
-    final controller = EstadosMunicipiosController();
-    final listaCidades = await controller.buscaMunicipiosPorEstado(sigla);
-    setState(() {
-      cidades = listaCidades.map((e) => e.nome).toList();
-      if (cidades.isNotEmpty) {
-        cidadeSelecionada = '';
-        dropValueCidade.value = '';
-      }
-    });
+   Future<void> _carregarCidades(String uf) async {
+    try{
+      List<Cidade> cidades = await fetchCidades(uf);
+      setState(() {
+        _cidades = cidades;
+      });
+    }catch(e){
+      print(e);
+    }
   }
 
    @override
   void initState() {
     super.initState();
-    pegarEstados(); // Busca os estados no initState
-    PegarCidades('PE');
+    _carregarEstados(); // Busca os estados no initState
+    _carregarCidades('PE'); // Busca as cidades no initState
   }
   
   @override
@@ -180,36 +183,34 @@ class _TelaCadastro3State extends State<TelaCadastro3>{
               ),
 
               // campo de preenchimento do Estado
-               ValueListenableBuilder(
-                valueListenable: dropValueEstado, 
-                builder: (BuildContext, String value, _){
-                  return SizedBox(
-                    width: 280,
-                    child: DropdownButtonFormField<String>(
-                      isExpanded: true,
-                      icon: const Icon(Icons.arrow_drop_down_sharp),
-                      hint: const Text('Selecione o seu estado'),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        )
-                      ),
-                      value: (value.isEmpty) ? null : value,
-                      onChanged: (escolha){
-                        dropValueEstado.value = escolha.toString();
-                        estadoSelecionado = dropValueEstado.value;
-                        PegarCidades(estadoSelecionado);
-                      },
-                      items: estados.map((op) => DropdownMenuItem(
-                        value: op,
-                        child: Text(op),
-                      )).toList(),
-                      
-                    ),
+              SizedBox(
+              width: 280,
+              child: DropdownButtonFormField<String>(
+                isExpanded: true,
+                icon: const Icon(Icons.arrow_drop_down_sharp),
+                hint: const Text('Selecione o seu estado'),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                value: estadoSelecionado.isEmpty ? null : estadoSelecionado,
+                onChanged: (String? escolha) {
+                  setState(() {
+                    estadoSelecionado = escolha!;
+                    dropValueEstado.value = escolha;
+                    _carregarCidades(escolha);
+                    cidadeSelecionada = ''; // Resetar a cidade ao mudar o estado
+                  });
+                },
+                items: _estados.map((Estado estado) {
+                  return DropdownMenuItem<String>(
+                    value: estado.sigla,
+                    child: Text(estado.nome),
                   );
-                }
-                
+                }).toList(),
               ),
+            ),
 
               const SizedBox(height: 32),
 
@@ -220,35 +221,32 @@ class _TelaCadastro3State extends State<TelaCadastro3>{
               ),
 
               // campo de preenchimento da cidade
-              ValueListenableBuilder(
-                valueListenable: dropValueCidade, 
-                builder: (BuildContext, String value, _){
-                  return SizedBox(
-                    width: 280,
-                    child: DropdownButtonFormField<String>(
-                      isExpanded: true,
-                      icon: const Icon(Icons.arrow_drop_down_sharp),
-                      hint: const Text('Selecione a sua cidade'),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        )
-                      ),
-                      value: (value.isEmpty) ? null : value,
-                      onChanged: (escolha){
-                        dropValueCidade.value = escolha.toString();
-                        cidadeSelecionada = dropValueCidade.value;
-                      },
-                      items: cidades.map((op) => DropdownMenuItem(
-                        value: op,
-                        child: Text(op),
-                      )).toList(),
-                      
-                    ),
+              SizedBox(
+              width: 280,
+              child: DropdownButtonFormField<String>(
+                isExpanded: true,
+                icon: const Icon(Icons.arrow_drop_down_sharp),
+                hint: const Text('Selecione a sua cidade'),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                value: cidadeSelecionada.isEmpty ? null : cidadeSelecionada,
+                onChanged: (escolha) {
+                  setState(() {
+                    cidadeSelecionada = escolha!;
+                    dropValueCidade.value = escolha;
+                  });
+                },
+                items: _cidades.map((Cidade op) {
+                  return DropdownMenuItem(
+                    value: op.nome,
+                    child: Text(op.nome),
                   );
-                }
-                
+                }).toList(),
               ),
+            ),
 
               const SizedBox(height: 32),
 

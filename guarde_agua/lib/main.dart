@@ -7,6 +7,7 @@ import 'package:guarde_agua/view/login/telaLogin.dart';
 import 'package:guarde_agua/view/Recuperar_Conta/telaRecuperarConta.dart';
 import 'package:guarde_agua/view/Recuperar_Conta/tela_trocar_senha.dart';
 import 'package:guarde_agua/view/Recuperar_Conta/verificarCodigo.dart';
+import 'package:guarde_agua/view/geolocalizacao/telaGeolocalizacao.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +23,7 @@ void main() {
         '/telaRecuperarConta': (context) => const RecuperarConta(),
          '/verificarCodigo': (context) => const VerificarCodigo(email: '',),
         '/telaTrocarSenha': (context) => TelaTrocarSenha(email: '',),
+        '/telaGeolocalizacao' : (context) => MainApp()
       },
     ),
   );
