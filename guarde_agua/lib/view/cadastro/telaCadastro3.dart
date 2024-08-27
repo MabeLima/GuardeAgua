@@ -67,7 +67,7 @@ class _TelaCadastro3State extends State<TelaCadastro3>{
     
 
     //base da url do servidor
-   const baseUrl = "http://192.168.0.77:3000/";
+   const baseUrl = "http://54.236.189.199:3000/";
 
   //recebimento dos parametros passados para uma variável "data" do tipo Map
    Map? data = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;

@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'dart:math' as Math;
 
 
 class MainApp extends StatefulWidget {
@@ -18,8 +19,10 @@ class _MainAppState extends State<MainApp> {
   Position? _currentPosition;
   bool _isTracking = false;
   List<LatLng> _pathToCalculate = [];
+  List<LatLng> _pointsArea = [];
   StreamSubscription<Position>? _positionStreamSubscription;
   double _walkDistance = 0;
+  double area = 0;
 
 
   @override
@@ -40,7 +43,6 @@ class _MainAppState extends State<MainApp> {
           accuracy: LocationAccuracy.high,
       ),
     );
-    print(_currentPosition!.latitude.toString());
     if (mounted){
         setState(() {} );
     }
@@ -52,6 +54,8 @@ class _MainAppState extends State<MainApp> {
       _positionStreamSubscription?.cancel();
       if (mounted) {
         setState(() {
+          _pointsArea = _pathToCalculate;
+          _calculateArea(_pointsArea);
           _pathToCalculate = [];
           _walkDistance = 0;
           _isTracking = false;
@@ -74,7 +78,7 @@ class _MainAppState extends State<MainApp> {
 
       const LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 1,
+        distanceFilter: 3,
       );
 
       _positionStreamSubscription =
@@ -99,58 +103,67 @@ class _MainAppState extends State<MainApp> {
     }
   }
 
-  void _calculateArea() {
-    if (_pathToCalculate.length < 3) {
+  void _calculateArea(List<LatLng> points) {
+    if (points.length < 3) {
       print("Não há pontos suficientes para calcular a área.");
       return;
     }
-    int indice = _pathToCalculate.length;
-    if (_pathToCalculate[indice - 1] != _pathToCalculate[0]) {
-      _pathToCalculate.add(_pathToCalculate[0]);
-    }
-    double area = _calculatePolygonArea(_pathToCalculate);
+
+    // Não modificar a lista original de pontos
+    List<LatLng> pointsWithClosure = List.from(points)..add(points[0]);
+
+    area = calculatePolygonArea(pointsWithClosure);
+    print("O valor da área é: ${area.toInt()} m²");
+    setState(() {});
     print("Área do polígono: ${area.toStringAsFixed(2)} m²");
   }
 
-  double _calculatePolygonArea(List<LatLng> points) {
-    double area = 0.0;
-    int n = points.length;
+  // Novo método para cálculo da área
+  static double calculatePolygonArea(List<LatLng> coordinates) {
+    double area = 0;
 
-    for (int i = 0; i < n; i++) {
-      double x1 = points[i].longitude;
-      double y1 = points[i].latitude;
+    if (coordinates.length > 2) {
+      for (var i = 0; i < coordinates.length - 1; i++) {
+        var p1 = coordinates[i];
+        var p2 = coordinates[i + 1];
+        area += convertToRadian(p2.longitude - p1.longitude) * 
+                (2 + Math.sin(convertToRadian(p1.latitude)) + Math.sin(convertToRadian(p2.latitude)));
+      }
 
-      double x2 = points[(i + 1) % n].longitude;
-      double y2 = points[(i + 1) % n].latitude;
-
-      area += (x1 * y2) - (x2 * y1);
+      area = area.abs() * 6378137 * 6378137 / 2;;
     }
 
-    return (area.abs() / 2.0);
+    // Convertendo metros quadrados para acres
+    return area;
+  }
+
+  static double convertToRadian(double input) {
+    return input * Math.pi / 180;
   }
 
   void calculateDistanceWalk() {
-    int indice = _pathToCalculate.length;
+    int indice = _pathToCalculate.length-1;
     if (indice < 2) {
       print('Pontos insuficientes');
     } else {
       _walkDistance += Geolocator.distanceBetween(
-        _pathToCalculate[indice - 2].latitude,
-        _pathToCalculate[indice - 2].longitude,
         _pathToCalculate[indice - 1].latitude,
         _pathToCalculate[indice - 1].longitude,
+        _pathToCalculate[indice].latitude,
+        _pathToCalculate[indice].longitude,
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    LatLng _initialPosition  = ModalRoute.of(context)!.settings.arguments as LatLng;
-    
+    LatLng _initialPosition  = LatLng(-8.017632703575888, -34.94476066699429);
+   
     return Scaffold(
       body: Stack(
         children: [
           FlutterMap(
+       
             options: MapOptions(
               initialCenter: _initialPosition,
               initialZoom: 19,
@@ -169,7 +182,7 @@ class _MainAppState extends State<MainApp> {
                       width: 10,
                       height: 10,
                       child: const Icon(
-                        Icons.person_2_sharp,
+                        Icons.add_location_outlined,
                         color: Color.fromRGBO(6, 93, 124, 1),
                       ),
                     ),
@@ -185,8 +198,19 @@ class _MainAppState extends State<MainApp> {
                     ),
                   ],
                 ),
+              if(_pointsArea.isNotEmpty)
+               PolygonLayer(
+                polygons: [
+                 Polygon(
+                  points: _pointsArea,
+                  color: Colors.blue.withOpacity(0.5),
+                  ),
+                ],
+              ),
             ],
           ),
+
+
           Column(
             children: [
               SizedBox(height: 50),
@@ -202,7 +226,7 @@ class _MainAppState extends State<MainApp> {
                           ),
                           child: Center(
                             child: Text(
-                              'Total de metros: $_walkDistance',
+                              'Total de metros: ' + _walkDistance.toInt().toString() + "m",
                               style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w600),
                             ),
@@ -221,41 +245,69 @@ class _MainAppState extends State<MainApp> {
               ),
             ],
           ),
-          Positioned(
+         Positioned(
             bottom: 30,
-            right: 15,
-            child: Container(
-              height: 64,
-              width: 386,
-              decoration: const BoxDecoration(
+            left: 0,
+            right: 0,
+          child: Center(
+             child: Container(
+                height: 64,
+                width: 386, 
+                decoration: const BoxDecoration(
                 color: Color.fromRGBO(6, 93, 124, 1),
                 borderRadius: BorderRadius.all(Radius.circular(30)),
               ),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
-                ),
-                onPressed: () => _toggleTracking(),
-                child: _isTracking
-                    ? const Text(
-                        "Finalizar",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text(
-                        "Ir para o caminhamento",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
-                        ),
-                      ),
               ),
-            ),
+                 onPressed: () => _toggleTracking(),
+                 child: _isTracking
+                ? const Text(
+                    "Finalizar",
+                 style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white,
+                ),
+              )
+            : const Text(
+                "Ir para o caminhamento",
+                  style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white,
+                ),
+              ),
+      ),
+    ),
+  ),
+),
+      Column(
+            children: [
+              SizedBox(height: 150),
+              Row(
+                children: [
+                  const SizedBox(width: 30),
+                     Container(
+                          height: 50,
+                          width: 180,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'área total: ' + area.toInt().toString() + "m²",
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        )
+                ],
+              ),
+            ],
           ),
         ],
       ),

@@ -7,14 +7,14 @@ import 'package:latlong2/latlong.dart';
 
 
 
-class TelaLogin extends StatefulWidget {
-  const TelaLogin({super.key});
+class LoginPage2 extends StatefulWidget {
+  const LoginPage2({super.key});
 
   @override
-  State<TelaLogin> createState() => _TelaLoginState();    
+  State<LoginPage2> createState() => _LoginPage2State();    
 }
 
-class _TelaLoginState extends State<TelaLogin> {
+class _LoginPage2State extends State<LoginPage2> {
   // Atributos de login
   Position? _initPositionGeo;
   LatLng? _initialPosition;
@@ -85,7 +85,7 @@ class _TelaLoginState extends State<TelaLogin> {
 
   void fazerLogin(String email, String senha) async {
     if (_formKey.currentState?.validate() ?? false) {
-      const Url = "http://192.168.0.77:3000/login";
+      const Url = "http://54.236.189.199:3000/login";
 
 
       Map<String,String> usuario = {
@@ -292,7 +292,7 @@ class _TelaLoginState extends State<TelaLogin> {
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
                   ),
-                  onPressed: () => fazerLogin(_email.text, _senha.text),
+                  onPressed: () =>  Navigator.pushNamed(context, '/telaGeolocalizacao',arguments: _initialPosition),
                   child: Text(
                     "Entrar",
                     style: TextStyle(

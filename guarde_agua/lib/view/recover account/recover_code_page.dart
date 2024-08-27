@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guarde_agua/view/Recuperar_Conta/tela_trocar_senha.dart'; // Importa a tela para criar nova senha
+import 'package:guarde_agua/view/recover%20account/recover_password_page.dart'; // Importa a tela para criar nova senha
 import 'package:http/http.dart' as http; // Importa a biblioteca HTTP para fazer requisições
 import 'dart:convert'; // Importa a biblioteca para converter JSON
 import 'dart:async'; // Importa a biblioteca para trabalhar com timers
@@ -63,7 +63,7 @@ class _VerificarCodigoState extends State<VerificarCodigo> {
   Future<void> verificarCodigo() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        var url = Uri.parse('http://192.168.0.77:3000/verificar_codigo'); // URL da API para verificar o código
+        var url = Uri.parse('http://54.236.189.199:3000/verificar_codigo'); // URL da API para verificar o código
         var body = jsonEncode({'token': codigo});
         var response = await http.post(
           url,
@@ -101,7 +101,7 @@ class _VerificarCodigoState extends State<VerificarCodigo> {
   // Função para reenviar o código
   Future<void> reenviarCodigo() async {
     try {
-      var url = Uri.parse('http://192.168.0.77:3000/recuperar_senha'); // URL da API para reenviar o código
+      var url = Uri.parse('http://54.236.189.199:3000/recuperar_senha'); // URL da API para reenviar o código
       var body = jsonEncode({'email': widget.email});
       var response = await http.post(
         url,

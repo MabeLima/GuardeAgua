@@ -146,7 +146,7 @@ class TelaCadastro extends StatelessWidget {
               ],
             ),
             const SizedBox(
-              height: 120,
+              height: 50,
             ),
             Center(
                   child: TextButton(

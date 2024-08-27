@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guarde_agua/view/Recuperar_Conta/verificarCodigo.dart';
+import 'package:guarde_agua/view/recover%20account/recover_code_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:guarde_agua/constants/app-colors.dart';
@@ -27,7 +27,7 @@ class _RecuperarContaState extends State<RecuperarConta> {
   Future<void> enviarRecuperacao() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        var url = Uri.parse('http://192.168.0.77:3000/recuperar_senha');
+        var url = Uri.parse('http://54.236.189.199:3000/recuperar_senha');
         
         var body = jsonEncode({'email': email});
         var response = await http.post(
@@ -156,7 +156,7 @@ class _RecuperarContaState extends State<RecuperarConta> {
                 validator: validarEmail,
               ),
 
-              const SizedBox(height: 210),
+              const SizedBox(height: 120),
              Container(
                 height: 60,
                 width: double.infinity,

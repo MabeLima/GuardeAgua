@@ -32,7 +32,7 @@ class _TelaTrocarSenhaState extends State<TelaTrocarSenha> {
     if (_formKey.currentState?.validate() ?? false) {
       try {
         print(widget.email);
-        var url = Uri.parse('http://192.168.0.77:3000/alterar_senha');
+        var url = Uri.parse('http://54.236.189.199:3000/alterar_senha');
         
         var body = jsonEncode({'email': widget.email,'senha': novaSenha});
         var response = await http.post(
